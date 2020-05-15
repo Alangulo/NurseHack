@@ -8,7 +8,7 @@ class App extends Component {
       return (
         <div className="demo-big-content">
     <Layout>
-        <Header title="Hospital Resources" scroll>
+        <Header className="header-color" title="Hospital Resources" scroll>
             <Navigation>
                 <a href="#">Profile</a>
             </Navigation>
@@ -17,7 +17,7 @@ class App extends Component {
             <Navigation>
             <Link to="/Patients">Patients</Link>
                 <a href="/">Messages</a>
-                <Link to="/resume">Data Dashboard</Link>
+                <Link to="/">Main Menu</Link>
                 <a href="#">Supplies</a>
                 <a href="#">Log Out</a>
             </Navigation>
