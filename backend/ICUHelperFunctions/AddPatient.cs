@@ -70,7 +70,7 @@ namespace ICUHelperFunctions
 
           //  Console.WriteLine(cnnString);
 
-            using (SqlConnection connection = new SqlConnection("Server=tcp:nursehack.database.windows.net,1433;Initial Catalog=nursehackdb;Persist Security Info=False;User ID=alerico;Password=Albus19878712;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
+            using (SqlConnection connection = new SqlConnection("st Security Info=False;User ID=alerico;Password=;=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
             {
                 String query = "insert into [dbo].[patient] (user_id,condition_id) values (@userId,@conditionId)";
 
