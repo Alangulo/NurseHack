@@ -41,6 +41,26 @@ END
 
 */
 
+/* insert a patient, if the user already exists
+@user_id = who already exist 
+@condition_id = from the select condition default = 1 (Good)
+@using_ventilator = from the select using_ventilator default = 0 (false) non using. 
+*/
+
+INSERT INTO nursehackdb.dbo.patient
+    (user_id, date_in, condition_id, release_date, using_ventilator)
+VALUES(@user_id, GETDATE(), @condition_id, null, @using_ventilator);
+
+/* To Update the patient state
+@condition_id = new condition
+@patient_id = get from the app patient_id
+*/
+UPDATE nursehackdb.dbo.patient
+SET condition_id=@condition_id
+WHERE id=@patien_id; 
+
+
+
 /* To assign patients to doctors or nurses
 @doctor_id - selector
 @patient_id - get patient_id from the app
