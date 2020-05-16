@@ -5,7 +5,9 @@ import { Route, Router } from "react-router-dom";
 import history from "./router/history";
 import Pages from "./routes/Pages";
 import { checkAuthentication } from "./actions/current";
-import { ICurrent } from "./mutations/types";
+
+import Toasts from "./components/Toasts/Toast.js";
+import { addToast } from "./actions/toasts";
 
 interface IProps {
   checkAuthenticationConnect: () => void;
@@ -24,6 +26,7 @@ const App = ({
     <Router history={history}>
       <Route component={Pages} />
     </Router>
+    
   ) : null;
 
   return (
@@ -33,13 +36,26 @@ const App = ({
   );
 }
 
-const mapStateToProps = (state: ICurrent) => ({
-  isAuthenticated: state.isAuthenticated
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated
 });
 
+/*function mapDispatchToProps(dispatch) {
+  return {
+    actions: {
+      toastActions: bindActionCreators({ addToast }, dispatch),
+    },
+    checkAuthenticationConnect: checkAuthentication,
+
+  };
+}*/
+
 const mapDispatchToProps = {
-  checkAuthenticationConnect: checkAuthentication
-};
+  checkAuthenticationConnect: checkAuthentication,
+  toastActions: addToast
+}
+
+console.log(mapDispatchToProps);
 
 export default connect(
   mapStateToProps,

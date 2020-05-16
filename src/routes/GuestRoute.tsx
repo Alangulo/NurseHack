@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { Route } from "react-router-dom";
 
 import history from "../router/history";
-import { ICurrent } from "../mutations/types";
 interface IProps {
   exact?: boolean;
   isAuthenticated: boolean | null;
@@ -32,8 +31,8 @@ const GuestRoute = ({
   );
 };
 
-const mapStateToProps = (state: ICurrent) => ({
-  isAuthenticated: state.isAuthenticated
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated
 });
 
 export default connect(

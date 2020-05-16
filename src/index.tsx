@@ -23,8 +23,7 @@ import thunkMiddleware from "redux-thunk-recursion-detect";
 
 import "assets/css/material-dashboard-react.css?v=1.8.0";
 import App from "./App";
-import currentReducer from "./reducers/auth";
-import { ICurrent } from "./mutations/types";
+import reducers from "./reducers/index";
 
 let composeEnhancers;
 
@@ -37,8 +36,8 @@ if (
   composeEnhancers = compose;
 }
 
-const store = createStore<ICurrent, any, any, any>(
-  currentReducer,
+const store = createStore<any, any, any, any>(
+  reducers,
   undefined,
   composeEnhancers(applyMiddleware(thunkMiddleware)),
 );
