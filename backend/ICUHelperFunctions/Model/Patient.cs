@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace ICUHelperFunctions
 {
     public class Patient
     {
-        public User ObjUser { get; set; }
+   
+       // public User ObjUser { get; set; }
 
         public int patientId { get; set; }
 
@@ -29,7 +31,21 @@ namespace ICUHelperFunctions
 
         public int possibleVentilator { get; set; }
 
+        public string fullName { get; set; }
 
+        public int idNumber { get; set; }
+
+        public int idType { get; set; }
+
+        public string phone { get; set; }
+
+        public string emergencyContact { get; set; }
+
+        public string phoneEmergencyContact { get; set; }
+
+        public int gender { get; set; }
+
+        public DateTime dob { get; set; }
 
 
     }
