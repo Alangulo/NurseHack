@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import LoginImg from "../../login.svg";
 
-export class Login extends React.Component {
+export class Login extends Component {
 
     constructor(props) {
         super(props);
