@@ -13,7 +13,7 @@ import CardFooter from "components/Card/CardFooter.js";
 import CardIcon from "components/Card/CardIcon.js";
 import Accessibility from "@material-ui/icons/Accessibility";
 import MaterialTable from "material-table"
-
+import axios from 'axios';
 
 
 const styles = {
@@ -51,217 +51,218 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function UserProfile() {
-  const classes = useStyles();
+export default class Patients extends React.Component {
+  constructor(props) {
+      super(props);
+      const classes = makeStyles(styles);
+      this.state = {
+        columns: [
+          { 
+            title: 'Patient Name', 
+            field: 'full_name', 
+            cellStyle: {
+              width: 20,
+              minWidth: 20
+            },
+            headerStyle: {
+              width: 20,
+              minWidth: 20
+            } 
+          },
+          { 
+            title: 'Date Of Birth', 
+            field: 'date_of_birth',
+            cellStyle: {
+              width: 20,
+              minWidth: 20
+            },
+            headerStyle: {
+              width: 20,
+              minWidth: 20
+            } 
+          },
+          { 
+            title: 'Gender', 
+            field: 'gender', 
+            cellStyle: {
+              width: 10,
+              minWidth: 10
+            },
+            headerStyle: {
+              width: 10,
+              minWidth: 10
+            },
+            lookup: {
+              'M': 'Male',
+              'F': 'Female'
+            }
+          },
+          { 
+            title: 'History Number', 
+            field: 'history_number',
+            type: 'numeric', 
+            cellStyle: {
+              width: 10,
+              minWidth: 10
+            },
+            headerStyle: {
+              width: 10,
+              minWidth: 10
+            } 
+          },
+          { 
+            title: 'Last Reported Symptoms', 
+            field: 'symptoms',
+            cellStyle: {
+              width: 100,
+              minWidth: 100
+            },
+            headerStyle: {
+              width: 100,
+              minWidth: 100
+            }  
+          },
+          { 
+            title: 'Medication', 
+            field: 'medication',
+            cellStyle: {
+              width: 100,
+              minWidth: 100
+            },
+            headerStyle: {
+              width: 100,
+              minWidth: 100
+            }  
+          },
+          {
+            title: 'Condition',
+            field: 'condition',
+            cellStyle: {
+              width: 20,
+              minWidth: 20
+            },
+            headerStyle: {
+              width:20,
+              maxWidth: 20
+            },
+            lookup: { 
+              1: "Good",
+              2: "Fair",
+              3: "Poor",
+              4: "Critical",
+              5: "Treated and Released",
+              6: "Treated and Transferred",
+              7: "Released",
+              8: "Dead"
+            },
+          },
+          {
+            title: 'Using Ventilator',
+            field: 'using_ventilator',
+            type: 'boolean',
+            cellStyle: {
+              width: 20,
+              minWidth: 20
+            },
+            headerStyle: {
+              width:20,
+              maxWidth: 10
+            } 
+          },
+        ],
+        data: [],
+        classes: classes
+      };
+    }
+    fetchPatients() {
+      axios
+      .get(`https://icuhelperfunctions.azurewebsites.net/api/getInventory?code=46BiSoIBZ6yUvaFkEuaRE/r0CUoZnJ7EfoJ7/ic9ldwVcf/gmNLBJg==`, {})
+      .then(res => {
+        const data = res.data.inventory;
+        this.setState({
+          data
+        })
+      })
+    }
+    componentWillMount(){
+      this.fetchPatients()
+    }
+    render() {
+      return (
+        <div>
+          <GridContainer>
+            <GridItem xs={12} sm={12} md={8}>
+              <Card>
+                <CardHeader color="primary">
+                  <h4 className={this.state.classes.cardTitleWhite}>Patients Profile</h4>
+                  <p className={this.state.classes.cardCategoryWhite}>Add or Modify Patients Data</p>
+                </CardHeader>
+                <CardBody>
+                <MaterialTable
+                  title={false}
+                  columns={this.state.columns}
+                  data={this.state.data}
+                  editable={{
+                    onRowAdd: (newData) =>
+                      new Promise((resolve) => {
+                        setTimeout(() => {
+                          resolve();
+                            const data = [...this.state.data];
+                            data.push(newData);
+                            this.state.data = { ...this.state.data, data };
+                        }, 600);
+                      }),
+                    onRowUpdate: (newData, oldData) =>
+                      new Promise((resolve, reject) => {
+                        
+                        setTimeout(() => {
+                          const checkEmpty = Object.values(newData).filter( v => v.length === 0 );
+                          if (checkEmpty.length !== 0) {
+                            reject();
+                            return;
+                          } 
+                          if (oldData) {
+                            resolve();
+                              const data = [...this.state.data];
+                              data[data.indexOf(oldData)] = newData;
+                              this.state.data = { ...this.state.data, data };
+                          }
+                        }, 600);
+                      }),
+                    onRowDelete: (oldData) =>
+                      new Promise((resolve) => {
+                        setTimeout(() => {
+                          resolve();
+                          const data = [...this.state.data];
+                          data.splice(data.indexOf(oldData), 1);
+                          this.state.data = { ...this.state.data, data };
+                        }, 600);
+                      }),
+                  }}
+                />
+              </CardBody>
+                <CardFooter>
+                  <Button color="primary">Update Profile</Button>
+                </CardFooter>
+              </Card>
+            </GridItem>
+            <GridItem xs={12} sm={12} md={4}>
+              <Card>
+                <CardHeader color="info" stats icon>
+                  <CardIcon color="info">
+                    <Accessibility />
+                  </CardIcon>
+                  <p className={this.state.classes.cardCategory}>Patients</p>
+                  <h3 className={this.state.classes.cardTitle}>Stream Patients Condition</h3>
+                </CardHeader>
+                <Button color="primary" round>
+                    See patients
+                  </Button>
+              </Card>
+            </GridItem>
+          </GridContainer>
+        </div>
+      );
+    };
 
-
-    const [state, setState] = React.useState({
-    columns: [
-      { 
-        title: 'Patient Name', 
-        field: 'full_name', 
-        cellStyle: {
-          width: 20,
-          minWidth: 20
-        },
-        headerStyle: {
-          width: 20,
-          minWidth: 20
-        } 
-      },
-      { 
-        title: 'Date Of Birth', 
-        field: 'date_of_birth',
-        cellStyle: {
-          width: 20,
-          minWidth: 20
-        },
-        headerStyle: {
-          width: 20,
-          minWidth: 20
-        } 
-      },
-      { 
-        title: 'Gender', 
-        field: 'gender', 
-        cellStyle: {
-          width: 10,
-          minWidth: 10
-        },
-        headerStyle: {
-          width: 10,
-          minWidth: 10
-        },
-        lookup: {
-          'M': 'Male',
-          'F': 'Female'
-        }
-      },
-      { 
-        title: 'History Number', 
-        field: 'history_number',
-        type: 'numeric', 
-        cellStyle: {
-          width: 10,
-          minWidth: 10
-        },
-        headerStyle: {
-          width: 10,
-          minWidth: 10
-        } 
-      },
-      { 
-        title: 'Last Reported Symptoms', 
-        field: 'symptoms',
-        cellStyle: {
-          width: 100,
-          minWidth: 100
-        },
-        headerStyle: {
-          width: 100,
-          minWidth: 100
-        }  
-      },
-      { 
-        title: 'Medication', 
-        field: 'medication',
-        cellStyle: {
-          width: 100,
-          minWidth: 100
-        },
-        headerStyle: {
-          width: 100,
-          minWidth: 100
-        }  
-      },
-      {
-        title: 'Condition',
-        field: 'condition',
-        cellStyle: {
-          width: 20,
-          minWidth: 20
-        },
-        headerStyle: {
-          width:20,
-          maxWidth: 20
-        },
-        lookup: { 
-          1: "Good",
-          2: "Fair",
-          3: "Poor",
-          4: "Critical",
-          5: "Treated and Released",
-          6: "Treated and Transferred",
-          7: "Released",
-          8: "Dead"
-        },
-      },
-      {
-        title: 'Using Ventilator',
-        field: 'using_ventilator',
-        type: 'boolean',
-        cellStyle: {
-          width: 20,
-          minWidth: 20
-        },
-        headerStyle: {
-          width:20,
-          maxWidth: 10
-        } 
-      },
-    ],
-    data: [
-      { full_name: 'Sairo Guanipa', 
-        date_of_birth: '1996-10-11', 
-        gender: 'M', 
-        symptoms: 'None',
-        history_number: 10000,
-        medication: 'None',
-        condition: 1,
-        using_ventilator: true
-      }
-    ],
-  });
-
-  return (
-    <div>
-      <GridContainer>
-        <GridItem xs={12} sm={12} md={8}>
-          <Card>
-            <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>Patients Profile</h4>
-              <p className={classes.cardCategoryWhite}>Add or Modify Patients Data</p>
-            </CardHeader>
-            <CardBody>
-            <MaterialTable
-              title={false}
-              columns={state.columns}
-              data={state.data}
-              editable={{
-                onRowAdd: (newData) =>
-                  new Promise((resolve) => {
-                    setTimeout(() => {
-                      resolve();
-                      setState((prevState) => {
-                        const data = [...prevState.data];
-                        data.push(newData);
-                        return { ...prevState, data };
-                      });
-                    }, 600);
-                  }),
-                onRowUpdate: (newData, oldData) =>
-                  new Promise((resolve, reject) => {
-                    
-                    setTimeout(() => {
-                      const checkEmpty = Object.values(newData).filter( v => v.length === 0 );
-                      if (checkEmpty.length !== 0) {
-                        reject();
-                        return;
-                      } 
-                      if (oldData) {
-                        resolve();
-                        setState((prevState) => {
-                          const data = [...prevState.data];
-                          data[data.indexOf(oldData)] = newData;
-                          return { ...prevState, data };
-                        });
-                      }
-                    }, 600);
-                  }),
-                onRowDelete: (oldData) =>
-                  new Promise((resolve) => {
-                    setTimeout(() => {
-                      resolve();
-                      setState((prevState) => {
-                        const data = [...prevState.data];
-                        data.splice(data.indexOf(oldData), 1);
-                        return { ...prevState, data };
-                      });
-                    }, 600);
-                  }),
-              }}
-            />
-          </CardBody>
-            <CardFooter>
-              <Button color="primary">Update Profile</Button>
-            </CardFooter>
-          </Card>
-        </GridItem>
-        <GridItem xs={12} sm={12} md={4}>
-           <Card>
-            <CardHeader color="info" stats icon>
-              <CardIcon color="info">
-                <Accessibility />
-              </CardIcon>
-              <p className={classes.cardCategory}>Patients</p>
-              <h3 className={classes.cardTitle}>Stream Patients Condition</h3>
-            </CardHeader>
-            <Button color="primary" round>
-                See patients
-              </Button>
-          </Card>
-        </GridItem>
-      </GridContainer>
-    </div>
-  );
 }
