@@ -14,7 +14,7 @@ import CardIcon from "components/Card/CardIcon.js";
 import Accessibility from "@material-ui/icons/Accessibility";
 import MaterialTable from "material-table"
 import axios from 'axios';
-
+import moment from 'moment';
 
 const styles = {
   cardCategoryWhite: {
@@ -72,6 +72,7 @@ export default class Patients extends React.Component {
           { 
             title: 'Date Of Birth', 
             field: 'date_of_birth',
+            type: 'date',
             cellStyle: {
               width: 20,
               minWidth: 20
@@ -205,12 +206,20 @@ export default class Patients extends React.Component {
                   editable={{
                     onRowAdd: (newData) =>
                       new Promise((resolve) => {
-                        setTimeout(() => {
-                          resolve();
+                          newData.date_of_birth = moment(newData.date_of_birth, "DD.MM.YYYY").format("YYYY-MM-DD");
+                          newData.password = "hola";
+                          newData.email = "hola@gmail.com";
+                          const url = "https://icuhelperfunctions.azurewebsites.net/api/AddPatient?code=8lmbKjnucT1MQaEeRJsCfB5QNXLsjmbTmr4lXgECmhjRp5buSQdnLw=="
+                          axios.post(url, newData)
+                          .then( res => {
+                            resolve();
                             const data = [...this.state.data];
                             data.push(newData);
                             this.state.data = { ...this.state.data, data };
-                        }, 600);
+                          })
+                          .catch( error => {
+                            console.log("Error: ", error);
+                          })
                       }),
                     onRowUpdate: (newData, oldData) =>
                       new Promise((resolve, reject) => {
